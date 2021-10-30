@@ -1,8 +1,9 @@
 class RecipeCard extends HTMLElement {
   constructor() {
     // Part 1 Expose - TODO
-
+    super();  
     // You'll want to attach the shadow DOM here
+    let shadow = this.attachShadow({mode:"open"});
   }
 
   set data(data) {
@@ -95,11 +96,31 @@ class RecipeCard extends HTMLElement {
     //    element.setAttribute()
     //    element.appendChild()
     //    & All of the helper functions below
-
+    
     // Make sure to attach your root element and styles to the shadow DOM you
     // created in the constructor()
-
+    
     // Part 1 Expose - TODO
+    this.shadowRoot.appendChild(styleElem);
+    let img = document.createElement("image");
+    img.src = searchForKey("Article", "thumbnailUrl");
+    img.alt = "Recipe Title";
+    this.shadowRoot.appendChild(img);
+    
+    let title = document.createElement("p");
+    title.setAttribute("class", "title");
+    let link_to_article = document.createElement("a");
+    link_to_article.innerHTML = "Title";
+    link_to_article.href = getUrl(data);
+    title.appendChild(link_to_article);
+    this.shadowRoot.appendChild(title);
+    
+    let org = document.createElement("p");
+    org.setAttribute("class", "organization");
+    org.innerHTML = "The Chef's Organization";
+    this.shadowRoot.appendChild(org);
+
+    
   }
 }
 

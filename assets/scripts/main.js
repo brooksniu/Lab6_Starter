@@ -1,5 +1,4 @@
 // main.js
-
 // Here is where the recipes that you will fetch.
 // Feel free to add your own here for part 2, if they are local files simply add their path as a string.
 const recipes = [
@@ -25,6 +24,7 @@ async function init() {
     return;
   };
   // Add the first three recipe cards to the page
+  // console.log("exe");  
   createRecipeCards();
   // Make the "Show more" button functional
   bindShowMore();
@@ -43,6 +43,31 @@ async function fetchRecipes() {
     // in the recipes folder and fetch them from there. You'll need to add their paths to the recipes array.
 
     // Part 1 Expose - TODO
+    for (let i = 0; i < recipes.length ; i++) {
+      // console.log("run");
+      fetch(recipes[i])
+        .then(response => response.json())
+        .then(data => {
+          recipeData[recipes[i]] = data ;
+          // console.log(recipeData[recipes[i]])
+          // console.log(recipes[i], data);
+        })
+        .catch(error => {
+          reject(false)
+          console.log("error in fetching")
+        });
+    }
+    // console.log(recipes.length);
+    // console.log(recipeData);
+    resolve(true);
+    // check if number of objects match
+    if (recipeData.attributes.length == recipes.length) {
+      resolve(true);
+    }
+    else {
+      console.log(recipeData.attributes.length  , recipes.length);
+      reject(false);
+    }
   });
 }
 
@@ -54,6 +79,25 @@ function createRecipeCards() {
   // show any others you've added when the user clicks on the "Show more" button.
 
   // Part 1 Expose - TODO
+  // only displays the 3 recipes!
+  // get the main block
+  
+  let mainBlock = document.getElementsByTagName("main");
+  console.log(recipeData);
+  for (let i in recipeData) {
+    let tempCard = document.createElement("recipe-card");
+    // console.log(recipes[i]);
+    // TODO: Fix the code! line 88 and 89 is not putting data into temcard.data
+    console.log(i);
+    tempCard.data = recipeData[i];  
+    // console.log(recipeData);
+    console.log(tempCard.data, i);
+    mainBlock.appendChild(tempCard);
+  }
+  // for testing
+  // let tempText = document.createElement("INPUT");
+  // mainBlock.appendChild(tempText);
+  
 }
 
 function bindShowMore() {
