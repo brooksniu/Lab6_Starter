@@ -4,7 +4,10 @@
 const recipes = [
   'https://introweb.tech/assets/json/ghostCookies.json',
   'https://introweb.tech/assets/json/birthdayCake.json',
-  'https://introweb.tech/assets/json/chocolateChip.json'
+  'https://introweb.tech/assets/json/chocolateChip.json',
+  './assets/recipes/CheesecakeRecipe1.json',
+  './assets/recipes/CheesecakeRecipe2.json',
+  './assets/recipes/CheesecakeRecipe3.json'
 ];
 
 // Once all of the recipes that were specified above have been fetched, their
@@ -43,14 +46,22 @@ async function fetchRecipes() {
     // in the recipes folder and fetch them from there. You'll need to add their paths to the recipes array.
 
     // Part 1 Expose - TODO
+    let count = 0;
     for (let i = 0; i < recipes.length ; i++) {
       // console.log("run");
       fetch(recipes[i])
         .then(response => response.json())
         .then(data => {
           recipeData[recipes[i]] = data ;
+          count++;
           // console.log(recipeData[recipes[i]])
           // console.log(recipes[i], data);
+        })
+        // check if finished
+        .then(function() {
+          if (count == recipes.length) {
+            return resolve(true);
+          }
         })
         .catch(error => {
           reject(false)
@@ -59,15 +70,6 @@ async function fetchRecipes() {
     }
     // console.log(recipes.length);
     // console.log(recipeData);
-    resolve(true);
-    // check if number of objects match
-    if (recipeData.attributes.length == recipes.length) {
-      resolve(true);
-    }
-    else {
-      console.log(recipeData.attributes.length  , recipes.length);
-      reject(false);
-    }
   });
 }
 
@@ -82,17 +84,20 @@ function createRecipeCards() {
   // only displays the 3 recipes!
   // get the main block
   
-  let mainBlock = document.getElementsByTagName("main");
+  let mainBlock = document.getElementsByTagName("main")[0];
   console.log(recipeData);
-  for (let i in recipeData) {
+  for (let i = 0; i< recipes.length; i++) {
     let tempCard = document.createElement("recipe-card");
     // console.log(recipes[i]);
-    // TODO: Fix the code! line 88 and 89 is not putting data into temcard.data
     console.log(i);
-    tempCard.data = recipeData[i];  
+    tempCard.data = recipeData[recipes[i]];  
     // console.log(recipeData);
-    console.log(tempCard.data, i);
+    // console.log(tempCard.data, i);
     mainBlock.appendChild(tempCard);
+    // if greater than 3, stop
+    if (document.getElementsByTagName("recipe-card").length >= 3) {
+      break;
+    }
   }
   // for testing
   // let tempText = document.createElement("INPUT");
@@ -109,4 +114,37 @@ function bindShowMore() {
   // in the recipeData object where you stored them/
 
   // Part 2 Explore - TODO
+  // get main block
+  let mainBlock = document.getElementsByTagName("main")[0];
+  // check if clicked
+  let expanded = false;
+  // get the expand button
+  let expand = document.getElementsByTagName("button")[0];
+  // showmore/ showless
+  expand.addEventListener("click", function(){
+    // if show more
+    if (!expanded) {
+      // start appending at the third element
+      for (let i = 3; i < recipes.length; i++) {
+        let tempCard = document.createElement("recipe-card");
+        tempCard.data = recipeData[recipes[i]] ;  
+        // console.log(recipeData);
+        // console.log(tempCard.data, i);
+        mainBlock.appendChild(tempCard);
+      }
+      expand.innerHTML = "Show less";
+      // set clicked to true
+      expanded = true;
+    }
+    // if show less
+    else {
+      // only leave first 3 recipes
+      mainBlock.textContent = "";
+      createRecipeCards();
+      expand.innerHTML = "Show more";
+      expanded = false;
+    }
+
+  });
+
 }
